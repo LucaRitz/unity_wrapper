@@ -1,2 +1,0 @@
-add_subdirectory(ext)
-add_subdirectory(template_lib)
