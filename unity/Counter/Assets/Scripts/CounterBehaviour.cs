@@ -18,6 +18,11 @@ public class CounterBehaviour : MonoBehaviour
         counterText.SetText(counter.ToString());
     }
 	
+	void OnDestroy() {
+		// Unregister events
+		CppEventSystem.OnCountEvent -= onCountEvent;
+	}
+	
 	private void onCountEvent(CountEvent eventParam) {
 		counter = eventParam.counter;
 	}
