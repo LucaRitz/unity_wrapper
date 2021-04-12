@@ -6,11 +6,8 @@
 ///////////////////////////////////////////////////////
 DebugCallback _debugger = nullptr;
 
-///////////////////////////////////////////////////////
-//// Event-Callbacks
-///////////////////////////////////////////////////////
 using CountEventQueue = unity::EventQueue<CountEvent, CountEventCallback>;
-CountEventQueue _countEventQueue;
+CountEventQueue* _countEventQueue;
 
 ///////////////////////////////////////////////////////
 //// Application specific stuff
@@ -31,7 +28,7 @@ private:
 };
 
 app::ParallelTask* parallelTask = nullptr;
-CounterListener counterListener {_countEventQueue};
+CounterListener* counterListener;
 
 ///////////////////////////////////////////////////////
 //// Implementation
@@ -39,20 +36,26 @@ CounterListener counterListener {_countEventQueue};
 
 void onStart() {
     // Startup and initialize application specific stuff
-    parallelTask = new app::ParallelTask{counterListener};
+    _countEventQueue = new CountEventQueue{};
+    counterListener = new CounterListener{*_countEventQueue};
+    parallelTask = new app::ParallelTask{*counterListener};
 }
 
 void onTearDown() {
     delete parallelTask;
+    delete counterListener;
+    delete _countEventQueue;
+    counterListener = nullptr;
+    _countEventQueue = nullptr;
     parallelTask = nullptr;
 }
 
 void processEvents() {
-    _countEventQueue.process();
+    _countEventQueue->process();
 }
 
 void onCountEvent(CountEventCallback callback) {
-    _countEventQueue.callback(callback);
+    _countEventQueue->callback(callback);
 }
 
 void debug(DebugCallback callback) {

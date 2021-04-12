@@ -3,9 +3,6 @@
 #include <queue>
 #include <mutex>
 
-#include <unity_wrapper/type.hpp>
-#include <string>
-
 namespace unity {
     template <class Event, class Callback>
     class EventQueue {
